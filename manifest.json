@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "时间戳转换器",
+    "version": "1.0",
+    "description": "将选中的10位或13位时间戳数字转换为YYYY-MM-DD HH:mm:ss格式的日期",
+    "permissions": ["activeTab"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
