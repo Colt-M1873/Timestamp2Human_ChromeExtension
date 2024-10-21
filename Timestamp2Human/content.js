@@ -19,6 +19,16 @@ document.addEventListener('mouseup', function(event) {
         
         console.log("转换后的日期:", formattedDate);
         showPopup(formattedDate, event);
+    } else if (isHexString(selectedText)) {
+        // 将十六进制字符串转换为字节数组
+        const byteArray = selectedText.split('\\x').filter(hex => hex).map(hex => parseInt(hex, 16));
+        // 将字节数组转换为 Uint8Array
+        const uint8Array = new Uint8Array(byteArray);
+        // 使用 TextDecoder 解码 UTF-8
+        const decoder = new TextDecoder('utf-8');
+        const decodedText = decoder.decode(uint8Array);
+        console.log("解码后的文本:", decodedText);
+        showPopup(decodedText, event);
     } else {
         hidePopup();
     }
@@ -28,7 +38,7 @@ document.addEventListener('selectionchange', function() {
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
     
-    if (!((selectedText.length === 13 || selectedText.length === 10) && /^\d+$/.test(selectedText))) {
+    if (!((selectedText.length === 13 || selectedText.length === 10) && /^\d+$/.test(selectedText)) && !isHexString(selectedText)) {
         hidePopup();
     }
 });
@@ -68,4 +78,9 @@ function hidePopup() {
         currentPopup = null;
         // console.log("弹窗已移除");
     }
+}
+
+// 辅助函数：检查是否为十六进制字符串
+function isHexString(str) {
+    return /^(\\x[0-9A-Fa-f]{2})+$/.test(str);
 }
