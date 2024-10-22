@@ -15,7 +15,8 @@ document.addEventListener('mouseup', function(event) {
             timestamp *= 1000; // 将秒级时间戳转换为毫秒级
         }
         const date = new Date(timestamp);
-        const formattedDate = date.toISOString();
+        // const formattedDate = date.toISOString(); // 使用ISO时间格式
+        const formattedDate = formatDateWithTimezone(date); // 使用带时区的本地时间格式
         
         console.log("转换后的日期:", formattedDate);
         showPopup(formattedDate, event);
@@ -83,4 +84,21 @@ function hidePopup() {
 // 辅助函数：检查是否为十六进制字符串
 function isHexString(str) {
     return /^(\\x[0-9A-Fa-f]{2})+$/.test(str);
+}
+
+function formatDateWithTimezone(date) {
+    const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+    const localDate = date.toLocaleString('zh-CN', options);
+    const timezoneOffset = -date.getTimezoneOffset() / 60;
+    const timezoneString = `UTC${timezoneOffset >= 0 ? '+' : '-'}${Math.abs(timezoneOffset)}`;
+    return `${localDate} ${timezoneString}`;
 }
